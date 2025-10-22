@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script defer src="./scripts/api.js"></script>
+    <script defer src="./scripts/main.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="./styles/main.css">
+</head>
+
+<body>
+    <div x-data="users()" x-init="init()">
+        <template x-for="user in users" :key="user.id">
+            <div>
+                <div x-text="user.id"></div>
+                <div x-text="user.name"></div>
+                <div x-text="user.email"></div>
+                <div x-text="user.birth"></div>
+                <div x-text="user.photo?.path"></div>
+                <div x-text="roleMap[user.role]"></div>
+                <div x-text="statusMap[user.status]"></div>
+            </div>
+        </template>
+    </div>
+</body>
+
+</html>
