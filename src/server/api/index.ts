@@ -9,4 +9,9 @@ router.use(json())
 router.use(urlencoded())
 router.use('/users', userRouter);
 
+//Fallback
+router.use((_, res) => {
+    return res.status(404).send({ message: "Not found" })
+})
+
 export { router as apiRouter }

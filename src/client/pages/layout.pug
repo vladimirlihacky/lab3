@@ -1,0 +1,11 @@
+include ../components/header.pug
+
+doctype html 
+html(data-bs-theme="light")
+    block vars
+    head
+        title= title
+    body 
+        .container-fluid.py-3.px-5
+            +header(tab) 
+            block content 

@@ -81,7 +81,7 @@ router.post(
             )
         ])
 
-        return res.json({ status: "Success" })
+        return res.json(await User.getById(id))
     }
 )
 
@@ -110,7 +110,7 @@ router.post(
             )
         ])
 
-        return res.json({ status: "Success" })
+        return res.json(await User.getById(id))
     }
 )
 
@@ -136,7 +136,7 @@ router.post(
 
         if(body.id) return res.status(400).json({ message: "ID is primary key and not allowed to change" })
 
-        const user = await User.update(
+        const [user] = await User.update(
             (user) => user.id === id, 
             (user) => ({ ...user, ...body })
         )
@@ -154,7 +154,7 @@ router.post(
 
         if(!validateStatus(status)) return res.status(400).json({ message: "Invalid status" })
 
-        const user = await User.update(
+        const [user] = await User.update(
             (user) => user.id === id, 
             //@ts-expect-error
             (user) => ({ ...user, status })   
@@ -173,7 +173,7 @@ router.post(
 
         if(!validateRole(role)) return res.status(400).json({ message: "Invalid status" })
 
-        const user = await User.update(
+        const [user] = await User.update(
             (user) => user.id === id, 
             //@ts-expect-error
             (user) => ({ ...user, role })   
