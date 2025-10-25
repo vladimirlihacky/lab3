@@ -1,4 +1,4 @@
-import { Model, type Repo, type Maybe, type Matcher, type Updater } from "../models"
+import { Model, type Repo, type Maybe, type Matcher, type Updater, type Pagination } from "../models"
 import { writeFile, readFile } from "node:fs/promises"
 import { existsSync } from "node:fs";
 
@@ -89,9 +89,10 @@ export class JSONRepo implements Repo {
         return entities.find(matching) || null;
     }
 
-    async find<T extends Model>(entity: new () => T, matching: Matcher<T>): Promise<T[]> {
+    async find<T extends Model>(entity: new () => T, matching: Matcher<T>, pagination?: Pagination): Promise<T[]> {
         const entities = await this.getEntities(entity);
-        return entities.filter(matching);
+        const { limit = 30, offset = 0 } = pagination ?? { limit: 30, offset: 0 };
+        return entities.filter(matching).slice(offset, offset + limit);
     }
 
     async update<T extends Model>(entity: new () => T, matching: Matcher<T>, update: Updater<T>): Promise<T[]> {

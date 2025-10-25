@@ -4,36 +4,47 @@ import { Router } from "express";
 import { validateId } from "./validators";
 import { Message } from "../models/message";
 import { validateRole, validateStatus } from "../../common/validators";
+import { requireRole } from "./auth";
+import { Role } from "../../common/types";
+import passport from "passport";
 
 const router = Router()
 
-router.get('/', async (_, res) => {
-    const users = await User.find(MatchAll);
+router.get(
+    '/',
+    passport.authenticate('jwt', { session: false }),
+    requireRole(Role.Administrator),
+    async (req, res) => {
+        const limit = Number(req.query.limit) || 30;
+        const offset = Number(req.query.offset) || 0;
 
-    return res.json(users); 
-})
+        const users = await User.find(MatchAll, { limit, offset });
+
+        return res.json(users);
+    }
+)
 
 router.get(
-    '/:id', 
-    validateId, 
+    '/:id',
+    validateId,
     async (req, res) => {
         const id = Number(req.params.id);
-        const user = await User.getById(id); 
+        const user = await User.getById(id);
 
-        if(!user) return res.status(404).json({ message: 'User not found' }); 
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
         return res.status(200).json(user);
     }
 )
 
 router.get(
-    '/:id/friends', 
-    validateId, 
+    '/:id/friends',
+    validateId,
     async (req, res) => {
         const id = Number(req.params.id);
-        const user = await User.getById(id); 
+        const user = await User.getById(id);
 
-        if(!user) return res.status(404).json({ message: 'User not found' }); 
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
         const friends = await User.find(({ id }) => user.friendIds.includes(id));
 
@@ -42,13 +53,13 @@ router.get(
 )
 
 router.get(
-    '/:id/messages', 
-    validateId, 
+    '/:id/messages',
+    validateId,
     async (req, res) => {
         const id = Number(req.params.id);
-        const user = await User.getById(id); 
+        const user = await User.getById(id);
 
-        if(!user) return res.status(404).json({ message: 'User not found' }); 
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
         const messages = await Message.find(({ id }) => user.messageIds.includes(id));
 
@@ -57,16 +68,16 @@ router.get(
 )
 
 router.post(
-    '/:id/addFriend', 
-    validateId, 
+    '/:id/addFriend',
+    validateId,
     async (req, res) => {
         const id = Number(req.params.id);
-        const friendId = Number(req.body.id); 
+        const friendId = Number(req.body.id);
 
         const user = await User.getById(id);
-        const friend = await User.getById(friendId); 
+        const friend = await User.getById(friendId);
 
-        if(!user || !friend) return res.status(404).json({ message: "User not found" });
+        if (!user || !friend) return res.status(404).json({ message: "User not found" });
 
         Promise.all([
             await User.update(
@@ -86,16 +97,16 @@ router.post(
 )
 
 router.post(
-    '/:id/removeFriend', 
-    validateId, 
+    '/:id/removeFriend',
+    validateId,
     async (req, res) => {
         const id = Number(req.params.id);
-        const friendId = Number(req.body.id); 
+        const friendId = Number(req.body.id);
 
         const user = await User.getById(id);
-        const friend = await User.getById(friendId); 
+        const friend = await User.getById(friendId);
 
-        if(!user || !friend) return res.status(404).json({ message: "User not found" });
+        if (!user || !friend) return res.status(404).json({ message: "User not found" });
 
         Promise.all([
             await User.update(
@@ -115,11 +126,11 @@ router.post(
 )
 
 router.post(
-    '/create', 
+    '/create',
     async (req, res) => {
-        const body = req.body; 
+        const body = req.body;
 
-        if(!User.validate(body)) return res.status(400).json({ message: "Invalid user data" });
+        if (!User.validate(body)) return res.status(400).json({ message: "Invalid user data" });
 
         const user = await User.create(body);
 
@@ -128,16 +139,16 @@ router.post(
 )
 
 router.post(
-    '/:id/update', 
-    validateId, 
+    '/:id/update',
+    validateId,
     async (req, res) => {
         const id = Number(req.params.id);
-        const body = req.body; 
+        const body = req.body;
 
-        if(body.id) return res.status(400).json({ message: "ID is primary key and not allowed to change" })
+        if (body.id) return res.status(400).json({ message: "ID is primary key and not allowed to change" })
 
         const [user] = await User.update(
-            (user) => user.id === id, 
+            (user) => user.id === id,
             (user) => ({ ...user, ...body })
         )
 
@@ -146,18 +157,18 @@ router.post(
 )
 
 router.post(
-    '/:id/setStatus/', 
-    validateId, 
+    '/:id/setStatus/',
+    validateId,
     async (req, res) => {
         const id = Number(req.params.id);
         const { status } = req.body;
 
-        if(!validateStatus(status)) return res.status(400).json({ message: "Invalid status" })
+        if (!validateStatus(status)) return res.status(400).json({ message: "Invalid status" })
 
         const [user] = await User.update(
-            (user) => user.id === id, 
+            (user) => user.id === id,
             //@ts-expect-error
-            (user) => ({ ...user, status })   
+            (user) => ({ ...user, status })
         )
 
         return res.json(user)
@@ -165,18 +176,18 @@ router.post(
 )
 
 router.post(
-    '/:id/setRole/', 
-    validateId, 
+    '/:id/setRole/',
+    validateId,
     async (req, res) => {
         const id = Number(req.params.id);
         const { role } = req.body;
 
-        if(!validateRole(role)) return res.status(400).json({ message: "Invalid status" })
+        if (!validateRole(role)) return res.status(400).json({ message: "Invalid status" })
 
         const [user] = await User.update(
-            (user) => user.id === id, 
+            (user) => user.id === id,
             //@ts-expect-error
-            (user) => ({ ...user, role })   
+            (user) => ({ ...user, role })
         )
 
         return res.json(user)

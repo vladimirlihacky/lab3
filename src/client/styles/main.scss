@@ -1,27 +1,2 @@
-@import "./fonts.scss";
-@import "./colors.scss";
-@import "./borders.scss";
-
-@import "../../../node_modules/bootstrap/scss/bootstrap";
+@import "../../../node_modules/bootstrap/dist/css/bootstrap.css";
 @import "../../../node_modules/bootstrap-icons/font/bootstrap-icons.min.css";
-
-[data-bs-theme="light"] {
-    body {
-        background-image: url("../assets/images/bg-light.png");
-    }
-}
-
-[data-bs-theme="dark"] {
-    body {
-        background-image: url("../assets/images/bg-dark.png");
-    }
-}
-
-body {
-    background-size: cover;
-    background-repeat: no-repeat;
-}
-
-label {
-    cursor: pointer;
-}

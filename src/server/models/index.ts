@@ -1,4 +1,5 @@
 export type Matcher<T> = (t: T) => boolean;
+export type Pagination = { limit?: number, offset?: number }
 
 export const MatchAll = (t: any) => true; 
 export const MatchNothing = (t: any) => false;
@@ -10,7 +11,7 @@ export type Maybe<T> = T | null | undefined;
 export interface Repo {
     getById<T extends Model>(entity: new () => T, id: number): Promise<Maybe<T>>;
     findOne<T extends Model>(entity: new () => T, matching: Matcher<T>): Promise<Maybe<T>>;
-    find<T extends Model>(entity: new () => T, matching: Matcher<T>): Promise<T[]>;
+    find<T extends Model>(entity: new () => T, matching: Matcher<T>, pagination?: Pagination): Promise<T[]>;
     update<T extends Model>(entity: new () => T, matching: Matcher<T>, update: Updater<T>): Promise<T[]>;
     create<T extends Model>(entity: new () => T, data: any): Promise<Maybe<T>>;
     delete<T extends Model>(entity: new () => T, matching: Matcher<T>): Promise<T[]>;
@@ -31,8 +32,8 @@ export abstract class Model {
         return Model.repo.findOne(this, matching);
     }
 
-    public static find<T extends Model>(this: new () => T, matching: Matcher<T>): Promise<T[]> {
-        return Model.repo.find(this, matching);
+    public static find<T extends Model>(this: new () => T, matching: Matcher<T>, pagination?: Pagination): Promise<T[]> {
+        return Model.repo.find(this, matching, pagination);
     }
 
     public static update<T extends Model>(this: new () => T, matching: Matcher<T>, update: Updater<T>): Promise<T[]> {

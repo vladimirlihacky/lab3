@@ -4,6 +4,7 @@
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/passport-jwt": "^4.0.1",
     "webpack-cli": "^6.0.1"
   },
   "peerDependencies": {
@@ -11,10 +12,14 @@
   },
   "dependencies": {
     "@types/alpinejs": "^3.13.11",
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/passport": "^1.0.17",
+    "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
+    "cookie-parser": "^1.4.7",
     "copy-webpack-plugin": "^13.0.1",
     "cors": "^2.8.5",
     "css-loader": "^7.1.2",
@@ -25,7 +30,10 @@
     "gulp-sass": "^6.0.1",
     "gulp-typescript": "^6.0.0-alpha.1",
     "html-webpack-plugin": "^5.6.4",
+    "jsonwebtoken": "^9.0.2",
     "mini-css-extract-plugin": "^2.9.4",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "preload-webpack-plugin": "^2.3.0",
     "pug": "^3.0.3",
     "pug-loader": "^2.4.0",
@@ -37,6 +45,6 @@
   },
   "scripts": {
     "build-client-webpack": "webpack --config ./build/webpack.js",
-    "dev-client-webpack": "webpack serve --config ./build/webpack.js"
+    "dev-client-webpack": "webpack --watch --config ./build/webpack.js"
   }
 }

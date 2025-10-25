@@ -1,6 +1,5 @@
 export enum Role {
-    Unauthorized, 
-    Authorized, 
+    User, 
     Administrator,
 }
 

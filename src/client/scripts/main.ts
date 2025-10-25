@@ -1,2 +1,1 @@
-//@ts-ignore
-import "../styles/main.scss"
+import "../styles/main.scss";

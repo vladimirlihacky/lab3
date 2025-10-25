@@ -1,5 +1,6 @@
 import config from "../../common/config";
 import type { Message, Role, Status, User } from "../../common/types";
+import type { Pagination } from "../../server/models";
 
 const base = `http://${config.server.host}:${config.server.port}/api`;
 
@@ -25,8 +26,8 @@ const post = async (url: string, body: any) => {
     return json;
 }
 
-export async function getUsers(): Promise<User[]> {
-    return await get(endpoint("users"));
+export async function getUsers(pagination?: Pagination): Promise<User[]> {
+    return await get(endpoint("users" + `?limit=${pagination?.limit}&offset=${pagination?.offset}`));
 }
 
 export async function getUser(id: number): Promise<User> {

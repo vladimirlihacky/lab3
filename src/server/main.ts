@@ -8,6 +8,6 @@ Model.setRepo(new JSONRepo(config.server.dbPath))
 
 const app = express(); 
 
-app.use('/api', apiRouter)
+app.use('/api', apiRouter);
 
-app.listen(config.server.port)
+app.listen(config.server.port);
